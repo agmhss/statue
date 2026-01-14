@@ -49,8 +49,7 @@
         btn.disabled = true;
         status.innerText = "Reimagining the Full Statue...";
 
-        // NEW PROMPT: Focuses on gender, full height, and traditional Tamil details
-        const basePrompt = "Wide shot, full-length head-to-toe hyper-realistic portrait of a woman or man as per the given input, ample headroom and empty space above the head, eyes expressing divine light love, anatomically perfect proportional correct body without any deformity of limps having maximum five fingers, maximum five human toes, maximum two hands, maximum two legs, in the exact same pose and stance as the original statue, living breathing person,realistic skin, wearing the same costume and jewellery of ancient Tamil woman or man with gold kasumalai, silk clothes, gold waist belt, anklets, bangles as in the original statue, in the exact same pose and stance as the original statue, living breathing woman or man accordingn, 8k resolution, cinematic lighting";
+        // NEW PROMPT: Focuses on gender, full height, and traditional Tamil detailconst basePrompt = "A stunning cinematic shot of an ancient Indian temple stone sculpture of a Goddess transforming into a living being. The top half of the statue has realistic skin, expressive eyes, and vibrant red and emerald green silk clothing with gold embroidery. The bottom half is still carved from weathered grey stone. Intricate gold jewelry, glowing divine aura, soft cinematic lighting, 8k resolution, hyper-realistic textures."; 
         const randomSeed = Math.floor(Math.random() * 99999);
         const encodedPrompt = encodeURIComponent(basePrompt);
         
