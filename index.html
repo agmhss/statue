@@ -47,7 +47,7 @@
         if (!photoInput.files[0]) return alert("Please select a photo first!");
 
         btn.disabled = true;
-        status.innerText = "Reimagining the Full Statue...";
+        status.innerText = "Generating";
 
         // NEW PROMPT: Focuses on gender, full height, and traditional Tamil detailconst basePrompt = "A stunning cinematic shot of an ancient Indian temple stone sculpture of a Goddess transforming into a living being. The top half of the statue has realistic skin, expressive eyes, and vibrant red and emerald green silk clothing with gold embroidery. The bottom half is still carved from weathered grey stone. Intricate gold jewelry, glowing divine aura, soft cinematic lighting, 8k resolution, hyper-realistic textures."; 
         const randomSeed = Math.floor(Math.random() * 99999);
@@ -57,7 +57,7 @@
         const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=1024&seed=${randomSeed}&model=flux&nologo=true`;
 
         try {
-            status.innerText = "Restoring heritage details from head to toe...";
+            status.innerText = "Generate Life";
             
             const img = new Image();
             img.src = imageUrl;
