@@ -1,95 +1,476 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statue to Person AI Transformer</title>
-    <style>
-        body { background: #050505; color: #FFD700; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; }
-        .card { background: #111; padding: 25px; border-radius: 20px; border: 1px solid #333; max-width: 400px; margin: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        h2 { margin-top: 0; letter-spacing: 1px; font-size: 1.4rem; }
-        input { width: 100%; padding: 15px; margin: 15px 0; border-radius: 10px; border: 1px solid #444; background: #000; color: #fff; box-sizing: border-box; }
-        button { width: 100%; padding: 18px; border-radius: 10px; border: none; background: #FFD700; color: #000; font-weight: bold; font-size: 16px; cursor: pointer; }
-        button:disabled { background: #555; cursor: not-allowed; }
-        #status { margin: 20px 0; font-size: 14px; color: #aaa; min-height: 20px; }
-        .result-box { margin-top: 25px; display: none; }
-        img { width: 100%; border-radius: 12px; border: 2px solid #FFD700; box-shadow: 0 5px 15px rgba(255,215,0,0.3); }
-        .download-btn { background: #222; color: #FFD700; border: 1px solid #FFD700; margin-top: 15px; padding: 10px; font-size: 12px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statue → Person (Free AI)</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --card: #111;
+      --text: #ffd700;
+      --muted: #a3a3a3;
+      --border: #2a2a2a;
+      --btn: #ffd700;
+      --btnText: #000;
+      --danger: #ff6b6b;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+
+    h2 { margin: 0 0 6px; letter-spacing: 0.5px; font-size: 1.35rem; }
+    p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+    .row { margin-top: 14px; text-align: left; }
+    label { display: block; font-size: 0.85rem; color: #cfcfcf; margin-bottom: 8px; }
+
+    input[type="file"], select, textarea {
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid #444;
+      background: #000;
+      color: #fff;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+      line-height: 1.3;
+    }
+
+    .hint { font-size: 0.8rem; color: #8c8c8c; margin-top: 8px; }
+
+    button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: none;
+      background: var(--btn);
+      color: var(--btnText);
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    button:disabled { background: #555; cursor: not-allowed; color: #111; }
+
+    .subbtn {
+      background: #1a1a1a;
+      color: var(--text);
+      border: 1px solid var(--text);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    #status {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      color: #c9c9c9;
+      min-height: 22px;
+      text-align: center;
+    }
+
+    .err { color: var(--danger); }
+
+    .result-box {
+      margin-top: 16px;
+      display: none;
+      text-align: center;
+    }
+    img {
+      width: 100%;
+      border-radius: 14px;
+      border: 2px solid var(--text);
+      box-shadow: 0 5px 15px rgba(255,215,0,0.25);
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 520px) {
+      .grid2 { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
+  <div class="card">
+    <h2>Statue → Person Transformer (Free AI)</h2>
+    <p>Upload a statue photo. The app will “look” at it, then generate a realistic full-body person.</p>
 
-<div class="card">
-    <h2>Statue to Person Transformer AI</h2>
-    <p style="font-size: 12px; color: #777;">Upload a statue to see it as a living person.</p>
-    
-    <input type="file" id="photoInput" accept="image/*">
+    <div class="row">
+      <label for="photoInput">1) Statue image</label>
+      <input type="file" id="photoInput" accept="image/*" />
+      <div class="hint">Tip: clear frontal photos work best. Anonymous users are rate-limited (about 1 request / 15s).</div>
+    </div>
+
+    <div class="row grid2">
+      <div>
+        <label for="modelSelect">2) Image model</label>
+        <select id="modelSelect">
+          <option value="flux">flux (default)</option>
+          <option value="turbo">turbo (fast)</option>
+        </select>
+        <div class="hint">If a model outputs weird hands, try another.</div>
+      </div>
+      <div>
+        <label for="sizeSelect">3) Output size</label>
+        <select id="sizeSelect">
+          <option value="768x1344">768×1344 (full body)</option>
+          <option value="640x1152">640×1152 (faster)</option>
+          <option value="512x1024">512×1024 (fastest)</option>
+        </select>
+        <div class="hint">Bigger images can be slower / time out.</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <label for="extraNotes">Optional: extra notes (kept brief)</label>
+      <textarea id="extraNotes" placeholder="e.g. keep same jewelry style, same pose, keep background simple"></textarea>
+      <div class="hint">We’ll keep your notes short so the model focuses on anatomy and realism.</div>
+    </div>
+
     <button id="transformBtn">TRANSFORM NOW</button>
-    
-    <div id="status">Ready to begin...</div>
+    <div id="status">Ready.</div>
 
     <div id="resultArea" class="result-box">
-        <p style="font-size: 11px; color: #FFD700;">REIMAGINED PORTRAIT</p>
-        <img id="outputImg" src="">
-        <button id="dlBtn" class="download-btn">Save to Gallery</button>
-        <button onclick="location.reload()" class="download-btn" style="border-color: #444; color: #888;">Try Another</button>
+      <p style="font-size: 0.8rem; color: var(--text); margin: 0 0 10px;">REIMAGINED PORTRAIT</p>
+      <img id="outputImg" alt="Generated result" />
+      <button id="dlBtn" class="subbtn">Save to Gallery</button>
+      <button id="retryBtn" class="subbtn" style="border-color:#444;color:#bbb;">Try another model/seed</button>
     </div>
-</div>
+  </div>
 
-<script>
+  <script>
     const btn = document.getElementById('transformBtn');
-    const status = document.getElementById('status');
+    const statusEl = document.getElementById('status');
     const resultArea = document.getElementById('resultArea');
     const outputImg = document.getElementById('outputImg');
     const photoInput = document.getElementById('photoInput');
+    const modelSelect = document.getElementById('modelSelect');
+    const sizeSelect = document.getElementById('sizeSelect');
+    const extraNotesEl = document.getElementById('extraNotes');
+    const retryBtn = document.getElementById('retryBtn');
 
-    btn.onclick = async () => {
-        if (!photoInput.files[0]) return alert("Please select a photo first!");
+    let lastPayload = null;
 
-        btn.disabled = true;
-        status.innerText = "Generating";
+    function setStatus(text, isError = false) {
+      statusEl.textContent = text;
+      statusEl.className = isError ? 'err' : '';
+    }
 
-        // NEW PROMPT: 
-         
-        const basePrompt = " First assess whether the given input is man or woman. Then Change the given input statue/picture into a wide shot, full-length head-to-feet photo of a person wearing the Tamil traditional dress and jewellery as in the original, ample headroom and empty space above the head, anatomically proportional correct perfect body without any deformity of limps, only five fingers, only two hands of equal length, only two legs, in the same pose and stance, loveshine in the eyes, living breathing person, realistic poring skin, perspiring, 8k resolution, cinematic lighting";
-            const randomSeed = Math.floor(Math.random() * 99999);
-        const encodedPrompt = encodeURIComponent(basePrompt);
-        
-        // FIX 1: Width=512 and Height=1024 creates a tall "Full Body" portrait
-        const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=1024&seed=${randomSeed}&model=flux&nologo=true`;
+    function sleep(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    async function safeFetchJson(url, options) {
+      const res = await fetch(url, options);
+      const text = await res.text();
+      let json = null;
+      try { json = JSON.parse(text); } catch (_) {}
+      if (!res.ok) {
+        const detail = json?.error?.message || json?.message || text || `HTTP ${res.status}`;
+        throw new Error(detail);
+      }
+      return json ?? text;
+    }
+
+    function dataUrlFromFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('Could not read image file'));
+        reader.onload = () => resolve(String(reader.result || ''));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function loadImageModels() {
+      // This endpoint returns something like: ["flux","turbo",...]
+      try {
+        const res = await fetch('https://image.pollinations.ai/models', { cache: 'no-store' });
+        if (!res.ok) return;
+        const models = await res.json();
+        if (!Array.isArray(models) || models.length < 1) return;
+
+        const preferred = ['flux', 'turbo', 'sdxl-turbo', 'stable-diffusion', 'gpt-image-large', 'seedream', 'kontext'];
+        const sorted = [
+          ...preferred.filter(m => models.includes(m)),
+          ...models.filter(m => !preferred.includes(m))
+        ].slice(0, 25);
+
+        const current = modelSelect.value;
+        modelSelect.innerHTML = '';
+        for (const m of sorted) {
+          const opt = document.createElement('option');
+          opt.value = m;
+          opt.textContent = m;
+          modelSelect.appendChild(opt);
+        }
+        if (sorted.includes(current)) modelSelect.value = current;
+      } catch (_) {
+        // non-fatal
+      }
+    }
+
+    async function describeStatueWithVision(imageDataUrl) {
+      // Uses the free multimodal endpoint to extract a prompt-friendly description.
+      // We ask for JSON so it's easy to consume.
+      const payload = {
+        model: "openai-large",
+        temperature: 0.2,
+        max_tokens: 220,
+        messages: [
+          {
+            role: "system",
+            content: [
+              {
+                type: "text",
+                text:
+                  "You extract visual details for image generation. Output STRICT JSON only with keys: gender, pose, attire, jewelry, hair, background, notableDetails. Keep each value short."
+              }
+            ]
+          },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: "Describe this statue/photo for recreating it as a living realistic human. Be factual." },
+              { type: "image_url", image_url: { url: imageDataUrl } }
+            ]
+          }
+        ]
+      };
+
+      const data = await safeFetchJson('https://text.pollinations.ai/openai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const raw = data?.choices?.[0]?.message?.content;
+      if (!raw) throw new Error('Vision step returned empty result');
+
+      let parsed = null;
+      try { parsed = JSON.parse(raw); } catch (_) {}
+      if (!parsed || typeof parsed !== 'object') throw new Error('Vision step did not return JSON');
+
+      // Normalize to short strings
+      const norm = (v) => String(v ?? '').replace(/\s+/g, ' ').trim();
+      return {
+        gender: norm(parsed.gender),
+        pose: norm(parsed.pose),
+        attire: norm(parsed.attire),
+        jewelry: norm(parsed.jewelry),
+        hair: norm(parsed.hair),
+        background: norm(parsed.background),
+        notableDetails: norm(parsed.notableDetails)
+      };
+    }
+
+    function buildPrompts(vision, extraNotes) {
+      const notes = String(extraNotes || '').trim().slice(0, 180);
+      const seedPhrase = "photorealistic, cinematic lighting, 8k, ultra-detailed skin texture, natural pores, subtle perspiration";
+
+      const base = [
+        "Wide shot, full-length head-to-feet photo with ample headroom and empty space above the head",
+        "Living breathing realistic human, anatomically correct proportions",
+        "Only two arms, only two legs, only two hands, only five fingers on each hand",
+        "Tamil traditional dress and jewelry matching the original style",
+        "Keep same pose and stance as the reference",
+        "Sharp eyes with warm lively expression",
+        seedPhrase,
+        // Inject vision summary (kept factual)
+        vision?.gender ? `Gender: ${vision.gender}` : "",
+        vision?.pose ? `Pose: ${vision.pose}` : "",
+        vision?.attire ? `Attire: ${vision.attire}` : "",
+        vision?.jewelry ? `Jewelry: ${vision.jewelry}` : "",
+        vision?.hair ? `Hair: ${vision.hair}` : "",
+        vision?.background ? `Background: ${vision.background}` : "Background: simple, clean, unobtrusive",
+        vision?.notableDetails ? `Notable details: ${vision.notableDetails}` : "",
+        notes ? `Extra notes: ${notes}` : ""
+      ].filter(Boolean).join(", ");
+
+      // Negative prompt does most of the heavy lifting for “no extra limbs/fingers”.
+      const negative = [
+        "deformed",
+        "disfigured",
+        "mutated",
+        "bad anatomy",
+        "bad hands",
+        "bad fingers",
+        "missing fingers",
+        "extra fingers",
+        "extra limb",
+        "extra arms",
+        "extra legs",
+        "extra hands",
+        "two heads",
+        "two faces",
+        "long neck",
+        "crooked eyes",
+        "out of frame",
+        "cropped feet",
+        "blur",
+        "lowres",
+        "worst quality",
+        "jpeg artifacts"
+      ].join(", ");
+
+      return { prompt: base, negative_prompt: negative };
+    }
+
+    function pickFallbackModels(primary) {
+      // Keep this conservative; model availability varies over time.
+      const order = [
+        primary,
+        'flux',
+        'gpt-image-large',
+        'seedream',
+        'stable-diffusion',
+        'sdxl-turbo',
+        'turbo'
+      ];
+      return [...new Set(order)].filter(Boolean);
+    }
+
+    function makeImageUrl({ prompt, negative_prompt, width, height, seed, model }) {
+      const encodedPrompt = encodeURIComponent(prompt);
+      const params = new URLSearchParams({
+        width: String(width),
+        height: String(height),
+        seed: String(seed),
+        model: String(model),
+        enhance: 'true',
+        safe: 'true'
+      });
+      // Some models honor negative_prompt; harmless if ignored.
+      if (negative_prompt) params.set('negative_prompt', negative_prompt);
+      return `https://image.pollinations.ai/prompt/${encodedPrompt}?${params.toString()}`;
+    }
+
+    async function loadImageWithTimeout(url, timeoutMs = 60000) {
+      // Use <img> loading (Pollinations returns an image directly).
+      return await new Promise((resolve, reject) => {
+        const img = new Image();
+        const t = setTimeout(() => {
+          img.src = '';
+          reject(new Error('Timed out while loading image'));
+        }, timeoutMs);
+        img.onload = () => { clearTimeout(t); resolve(); };
+        img.onerror = () => { clearTimeout(t); reject(new Error('Image load failed')); };
+        img.src = url;
+      });
+    }
+
+    async function generateWithFallback(payload) {
+      const models = pickFallbackModels(payload.model);
+      let attempt = 0;
+      let lastErr = null;
+
+      for (const model of models) {
+        attempt++;
+        const url = makeImageUrl({ ...payload, model });
+        setStatus(`Generating (model: ${model}, attempt ${attempt}/${models.length})…`);
 
         try {
-            status.innerText = "Generate Life";
-            
-            const img = new Image();
-            img.src = imageUrl;
-            img.onload = () => {
-                outputImg.src = imageUrl;
-                resultArea.style.display = "block";
-                status.innerText = "Full-Length Transformation Complete!";
-                btn.disabled = false;
-                outputImg.scrollIntoView({ behavior: 'smooth' });
-            };
-            img.onerror = () => {
-                status.innerText = "Server busy, trying one more time...";
-                btn.disabled = false;
-            };
-
+          // quick backoff between attempts for anonymous rate limits
+          if (attempt > 1) await sleep(Math.min(3000 * attempt, 12000));
+          await loadImageWithTimeout(url, 75000);
+          return { url, model };
         } catch (e) {
-            status.innerText = "Connection error. Please try again.";
-            btn.disabled = false;
+          lastErr = e;
         }
-    };
+      }
 
-    document.getElementById('dlBtn').onclick = () => {
-        const a = document.createElement('a');
-        a.href = outputImg.src;
-        a.download = "Ancient_Statue_AI.jpg";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    };
-            </script>
+      throw lastErr || new Error('All models failed');
+    }
 
+    async function runTransform({ forceNewSeed = false } = {}) {
+      const file = photoInput.files?.[0];
+      if (!file) {
+        alert('Please select a photo first!');
+        return;
+      }
+
+      btn.disabled = true;
+      retryBtn.disabled = true;
+      setStatus('Reading image…');
+      resultArea.style.display = 'none';
+
+      try {
+        const imageDataUrl = await dataUrlFromFile(file);
+
+        setStatus('Analyzing statue (vision)…');
+        const vision = await describeStatueWithVision(imageDataUrl);
+
+        const { prompt, negative_prompt } = buildPrompts(vision, extraNotesEl.value);
+        const [w, h] = String(sizeSelect.value).split('x').map(Number);
+        const seed = forceNewSeed ? Math.floor(Math.random() * 999999) : (lastPayload?.seed ?? Math.floor(Math.random() * 999999));
+        const model = modelSelect.value || 'flux';
+
+        const payload = { prompt, negative_prompt, width: w || 512, height: h || 1024, seed, model };
+        lastPayload = payload;
+
+        const { url, model: usedModel } = await generateWithFallback(payload);
+
+        outputImg.src = url;
+        resultArea.style.display = 'block';
+        setStatus(`Done. Model used: ${usedModel}. Seed: ${seed}.`);
+        btn.disabled = false;
+        retryBtn.disabled = false;
+        outputImg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (e) {
+        console.error(e);
+        const msg = String(e?.message || e || 'Unknown error');
+        setStatus(`Failed: ${msg}`, true);
+        btn.disabled = false;
+        retryBtn.disabled = false;
+      }
+    }
+
+    btn.addEventListener('click', () => runTransform({ forceNewSeed: true }));
+    retryBtn.addEventListener('click', () => runTransform({ forceNewSeed: true }));
+
+    document.getElementById('dlBtn').addEventListener('click', async () => {
+      const src = outputImg.src;
+      if (!src) return;
+      const a = document.createElement('a');
+      a.href = src;
+      a.download = `statue_to_person_${Date.now()}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    loadImageModels();
+  </script>
 </body>
 </html>
