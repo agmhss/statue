@@ -137,8 +137,8 @@
       <div>
         <label for="modelSelect">2) Image model</label>
         <select id="modelSelect">
-          <option value="flux">flux (default)</option>
-          <option value="turbo">turbo (fast)</option>
+          <option value="Flux Schnell">flux (default)</option>
+          <option value="Dirtberry (api.airforce)">turbo (fast)</option>
         </select>
         <div class="hint">If a model outputs weird hands, try another.</div>
       </div>
@@ -216,7 +216,7 @@
     async function loadImageModels() {
       // This endpoint returns something like: ["flux","turbo",...]
       try {
-        const res = await fetch('https://image.pollinations.ai/models', { cache: 'no-store' });
+        const res = await fetch('https://pollinations.ai', { cache: 'no-store' });
         if (!res.ok) return;
         const models = await res.json();
         if (!Array.isArray(models) || models.length < 1) return;
