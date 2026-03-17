@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Statue → Person (Free AI)</title>
+  <title>Statue → Person (Free AI 2026)</title>
   <style>
     :root {
       --bg: #050505;
@@ -15,7 +15,6 @@
       --btnText: #000;
       --danger: #ff6b6b;
     }
-
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -27,7 +26,6 @@
       display: grid;
       place-items: center;
     }
-
     .card {
       width: 100%;
       max-width: 540px;
@@ -37,14 +35,11 @@
       padding: 24px;
       box-shadow: 0 10px 40px #000c;
     }
-
-    h2 { margin: 0 0 8px; font-size: 1.4rem; letter-spacing: 0.4px; }
-    p  { margin: 0 0 16px; color: var(--muted); font-size: 0.92rem; }
-
+    h2 { margin: 0 0 8px; font-size: 1.42rem; }
+    p { margin: 0 0 18px; color: var(--muted); font-size: 0.94rem; }
     .row { margin: 20px 0; text-align: left; }
     label { display: block; font-size: 0.88rem; color: #ddd; margin-bottom: 8px; }
-
-    input[type="file"], select, textarea {
+    input[type="file"], input[type="text"], select, textarea {
       width: 100%;
       padding: 12px 14px;
       border-radius: 12px;
@@ -53,11 +48,8 @@
       color: white;
       font: inherit;
     }
-
-    textarea { min-height: 86px; resize: vertical; }
-
-    .hint { font-size: 0.78rem; color: #888; margin-top: 6px; line-height: 1.4; }
-
+    textarea { min-height: 84px; resize: vertical; }
+    .hint { font-size: 0.78rem; color: #888; margin-top: 6px; line-height: 1.45; }
     button {
       width: 100%;
       margin-top: 12px;
@@ -69,11 +61,10 @@
       font-weight: 800;
       font-size: 1.05rem;
       cursor: pointer;
-      transition: 0.13s;
+      transition: 0.14s;
     }
-    button:hover:not(:disabled) { filter: brightness(1.08); }
+    button:hover:not(:disabled) { filter: brightness(1.1); }
     button:disabled { background: #444; color: #999; cursor: not-allowed; }
-
     .subbtn {
       background: #1a1a1a;
       color: var(--text);
@@ -84,345 +75,310 @@
       cursor: pointer;
       width: 100%;
       margin-top: 10px;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
     }
-
     #status {
-      margin: 16px 0 8px;
-      font-size: 0.94rem;
+      margin: 16px 0;
+      font-size: 0.95rem;
       color: #ccc;
-      min-height: 1.4em;
+      min-height: 1.5em;
       text-align: center;
     }
-
     .err { color: var(--danger); }
-
-    .result-box {
-      margin-top: 24px;
-      display: none;
-      text-align: center;
-    }
-
+    .result-box { margin-top: 24px; display: none; text-align: center; }
     #outputImg {
       width: 100%;
-      max-height: 70vh;
+      max-height: 68vh;
       object-fit: contain;
       border-radius: 14px;
       border: 2px solid var(--text);
-      box-shadow: 0 6px 20px rgba(255,215,0,0.2);
+      box-shadow: 0 6px 20px rgba(255,215,0,0.18);
       background: #0002;
     }
-
-    .loading-img {
-      opacity: 0.4;
-      filter: blur(1.5px);
-    }
-
-    .grid2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    @media (max-width: 520px) {
-      .grid2 { grid-template-columns: 1fr; gap: 20px; }
-      .card { padding: 18px; }
-    }
+    .loading { opacity: 0.5; filter: blur(2px); }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .grid2 { grid-template-columns: 1fr; gap: 20px; } }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h2>Statue → Realistic Person</h2>
-    <p>Upload a statue photo → get a photorealistic full-body human version (free, no login)</p>
+    <h2>Statue → Realistic Person (Free 2026)</h2>
+    <p>Upload statue photo → get photorealistic living human. Free / anonymous ok, but API key helps a lot.</p>
 
     <div class="row">
-      <label for="photoInput">1. Statue image (frontal works best)</label>
+      <label for="apiKeyInput">API Key (optional but recommended)</label>
+      <input type="text" id="apiKeyInput" placeholder="Get free at enter.pollinations.ai" />
+      <div class="hint">Anonymous = rate-limited / no vision. Free key = much more reliable. <a href="https://enter.pollinations.ai" target="_blank" style="color:var(--text);">Get key →</a></div>
+    </div>
+
+    <div class="row">
+      <label for="photoInput">1. Statue image (frontal / clear best)</label>
       <input type="file" id="photoInput" accept="image/*" />
-      <div class="hint">Anonymous users are rate-limited (~1 req / 15–30 s). Clear, well-lit photos give best results.</div>
+      <div class="hint">Well-lit, full-view statues give best realism & anatomy.</div>
     </div>
 
     <div class="row grid2">
       <div>
         <label for="modelSelect">2. Model</label>
         <select id="modelSelect">
-          <option value="flux">Flux (best quality)</option>
+          <option value="flux">Flux (best quality / anatomy)</option>
           <option value="turbo">Turbo (fast)</option>
-          <option value="zimage">Z-Image (realism)</option>
+          <option value="zimage">Z-Image (strong realism)</option>
+          <option value="kontext">Kontext (creative)</option>
         </select>
-        <div class="hint">Flux usually gives best anatomy & realism.</div>
       </div>
-
       <div>
-        <label for="sizeSelect">3. Size</label>
+        <label for="sizeSelect">3. Output size</label>
         <select id="sizeSelect">
           <option value="768x1344">768×1344 — full body</option>
           <option value="640x1152">640×1152 — balanced</option>
           <option value="512x1024">512×1024 — fastest</option>
         </select>
-        <div class="hint">Larger = slower + higher chance of timeout.</div>
+        <div class="hint">Bigger = slower + possible timeout on free tier.</div>
       </div>
     </div>
 
     <div class="row">
-      <label for="extraNotes">4. Extra notes (short)</label>
-      <textarea id="extraNotes" placeholder="e.g. keep same pose, same saree style, simple background, youthful face"></textarea>
-      <div class="hint">Keep under 120 characters — helps model focus on realism & anatomy.</div>
+      <label for="extraNotes">4. Extra notes (keep short)</label>
+      <textarea id="extraNotes" placeholder="e.g. keep saree & jewelry, youthful face, same pose, plain background"></textarea>
+      <div class="hint">≤120 chars — model focuses better on realism & proportions.</div>
     </div>
 
     <button id="transformBtn">TRANSFORM TO PERSON</button>
-    <div id="status">Ready.</div>
+    <div id="status">Ready. Select image to begin.</div>
 
     <div id="resultArea" class="result-box">
-      <p style="font-size:0.82rem; color:var(--text); margin:0 0 12px;">Generated realistic version</p>
+      <p style="font-size:0.84rem; color:var(--text); margin:0 0 12px;">Generated realistic human version</p>
       <img id="outputImg" alt="Generated result" />
-      <button id="dlBtn" class="subbtn">Download Image</button>
-      <button id="retryBtn" class="subbtn" style="border-color:#555;color:#ccc;">New variation (same prompt)</button>
+      <button id="dlBtn" class="subbtn">Download JPG</button>
+      <button id="retryBtn" class="subbtn" style="border-color:#555;color:#ccc;">New variation (different seed)</button>
     </div>
   </div>
 
   <script>
     const els = {
+      apiKey:     document.getElementById('apiKeyInput'),
       btn:        document.getElementById('transformBtn'),
       status:     document.getElementById('status'),
-      resultArea: document.getElementById('resultArea'),
-      outputImg:  document.getElementById('outputImg'),
-      photoInput: document.getElementById('photoInput'),
+      result:     document.getElementById('resultArea'),
+      img:        document.getElementById('outputImg'),
+      file:       document.getElementById('photoInput'),
       model:      document.getElementById('modelSelect'),
       size:       document.getElementById('sizeSelect'),
       notes:      document.getElementById('extraNotes'),
-      dlBtn:      document.getElementById('dlBtn'),
-      retryBtn:   document.getElementById('retryBtn'),
+      dl:         document.getElementById('dlBtn'),
+      retry:      document.getElementById('retryBtn'),
     };
 
     let lastPayload = null;
 
-    function setStatus(msg, isError = false) {
+    function setStatus(msg, err = false) {
       els.status.textContent = msg;
-      els.status.className = isError ? 'err' : '';
+      els.status.className = err ? 'err' : '';
     }
 
-    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-    async function fetchJson(url, opts = {}) {
-      const res = await fetch(url, {
-        ...opts,
-        headers: { 'Content-Type': 'application/json', ...(opts.headers||{}) }
-      });
-      let txt; try { txt = await res.text(); } catch { txt = ''; }
-      let json; try { json = JSON.parse(txt); } catch { json = null; }
-
-      if (!res.ok) {
-        const errMsg = json?.error?.message ?? json?.message ?? txt || `HTTP ${res.status}`;
-        throw new Error(errMsg);
+    async function req(url, opts = {}) {
+      const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+      if (els.apiKey.value.trim()) {
+        headers.Authorization = `Bearer ${els.apiKey.value.trim()}`;
       }
-      return json ?? txt;
+      const res = await fetch(url, { ...opts, headers });
+      let text = await res.text().catch(() => '');
+      let json;
+      try { json = JSON.parse(text); } catch {}
+      if (!res.ok) {
+        const msg = json?.error?.message ?? json?.message ?? text || `HTTP ${res.status}`;
+        throw new Error(msg);
+      }
+      return json ?? text;
     }
 
-    function fileToDataUrl(file) {
-      return new Promise((ok, fail) => {
+    function fileToB64(file) {
+      return new Promise((ok, no) => {
         const r = new FileReader();
-        r.onerror = () => fail(new Error('Cannot read file'));
-        r.onload  = () => ok(r.result);
+        r.onerror = () => no(new Error('File read error'));
+        r.onload = () => ok(r.result);
         r.readAsDataURL(file);
       });
     }
 
-    async function describeImage(dataUrl) {
-      const payload = {
-        model: "openai",
-        temperature: 0.25,
-        max_tokens: 180,
-        messages: [
-          {
-            role: "system",
-            content: "You are a precise image describer for image-to-image generation. Output **only** valid JSON with these exact keys: gender, pose, clothing, jewelry, hair, background, special_features. Keep values very short and factual."
-          },
-          {
-            role: "user",
-            content: [
-              { type: "text",  text: "Describe this statue in detail so it can be turned into a realistic living person. Focus on pose, clothing, accessories." },
-              { type: "image_url", image_url: { url: dataUrl } }
-            ]
-          }
-        ]
-      };
+    async function visionDescribe(b64) {
+      try {
+        const body = {
+          model: "gemini-large",  // or "openai", "gemini" — vision-capable
+          messages: [
+            {
+              role: "system",
+              content: "Output **only** valid compact JSON. Keys: gender, pose, clothing, jewelry, hair, background, special_details. Values short & factual. Describe statue for turning into realistic human."
+            },
+            {
+              role: "user",
+              content: [
+                { type: "text", text: "Describe this statue in detail: pose, attire, accessories, etc." },
+                { type: "image_url", image_url: { url: b64 } }
+              ]
+            }
+          ],
+          max_tokens: 160,
+          temperature: 0.25
+        };
 
-      const data = await fetchJson('https://gen.pollinations.ai/v1/chat/completions', {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      });
+        const data = await req('https://gen.pollinations.ai/v1/chat/completions', {
+          method: 'POST',
+          body: JSON.stringify(body)
+        });
 
-      const text = data?.choices?.[0]?.message?.content ?? '';
-      if (!text) throw new Error('Vision returned empty');
+        const content = data?.choices?.[0]?.message?.content ?? '';
+        if (!content) throw new Error('Empty vision response');
 
-      let obj;
-      try { obj = JSON.parse(text); } catch { throw new Error('Vision did not return JSON'); }
-
-      return {
-        gender:        String(obj.gender         ?? '').trim(),
-        pose:          String(obj.pose           ?? '').trim(),
-        clothing:      String(obj.clothing       ?? obj.attire ?? '').trim(),
-        jewelry:       String(obj.jewelry        ?? '').trim(),
-        hair:          String(obj.hair           ?? '').trim(),
-        background:    String(obj.background     ?? '').trim(),
-        special:       String(obj.special_features ?? obj.notableDetails ?? '').trim()
-      };
+        const parsed = JSON.parse(content);
+        return {
+          gender: String(parsed.gender ?? '').trim(),
+          pose: String(parsed.pose ?? '').trim(),
+          clothing: String(parsed.clothing ?? parsed.attire ?? '').trim(),
+          jewelry: String(parsed.jewelry ?? '').trim(),
+          hair: String(parsed.hair ?? '').trim(),
+          background: String(parsed.background ?? '').trim(),
+          special: String(parsed.special_details ?? '').trim()
+        };
+      } catch (e) {
+        console.warn('Vision failed (likely rate-limit/no key):', e.message);
+        return null;
+      }
     }
 
-    function buildPrompt(vision, extra) {
-      const extraTxt = String(extra || '').trim().slice(0, 140);
+    function makePrompt(vision, extra) {
+      const ex = String(extra || '').trim().slice(0, 140);
 
-      const parts = [
-        "Full-body portrait, head-to-toe, generous headroom, standing pose",
-        "Realistic living human, perfect anatomy, correct proportions",
-        "Exactly two arms, two legs, normal hands, five fingers each",
-        "Sharp facial details, lively eyes, natural skin texture, pores, cinematic lighting, photorealistic, 8k",
-        vision.gender     && `gender: ${vision.gender}`,
-        vision.pose       && `exact same pose and stance: ${vision.pose}`,
-        vision.clothing   && `traditional Indian ${vision.clothing}`,
-        vision.jewelry    && `same jewelry style: ${vision.jewelry}`,
-        vision.hair       && `hairstyle: ${vision.hair}`,
-        vision.background ? `background: ${vision.background}` : "clean, simple, neutral background",
-        vision.special    && `important details: ${vision.special}`,
-        extraTxt && `additional instruction: ${extraTxt}`
-      ].filter(Boolean);
+      const pos = [
+        "Full body portrait, head-to-toe, standing, generous headroom",
+        "Photorealistic living human, perfect anatomy, correct body proportions",
+        "Exactly two arms, two legs, normal human hands, five fingers per hand",
+        "Detailed skin texture, pores, natural lighting, sharp lively eyes, 8k quality",
+        vision?.gender && `Gender: ${vision.gender}`,
+        vision?.pose && `Exact same pose and body stance: ${vision.pose}`,
+        vision?.clothing && `Wearing traditional Tamil/Indian ${vision.clothing}`,
+        vision?.jewelry && `Same jewelry & accessories style: ${vision.jewelry}`,
+        vision?.hair && `Hairstyle: ${vision.hair}`,
+        vision?.background ? `Background: ${vision.background}` : "simple neutral background, no distractions",
+        vision?.special && `Important details to preserve: ${vision.special}`,
+        ex && `Extra: ${ex}`
+      ].filter(Boolean).join(", ");
 
-      const positive = parts.join(", ");
-
-      const negative = [
-        "deformed, mutated, bad anatomy, bad proportions",
-        "extra limbs, extra arms, extra legs, extra hands",
-        "missing fingers, extra fingers, fused fingers",
-        "two heads, long neck, deformed face, blurry eyes",
-        "bad hands, malformed hands, low quality hands",
-        "cropped, out of frame, cut off feet, cut off head",
-        "worst quality, lowres, jpeg artifacts, blur"
+      const neg = [
+        "deformed, mutated, bad anatomy, bad proportions, extra limbs",
+        "extra arms, extra legs, extra hands, extra fingers, missing fingers",
+        "fused fingers, malformed hands, bad hands, two heads, long neck",
+        "blurry eyes, deformed face, cropped feet, out of frame",
+        "lowres, worst quality, jpeg artifacts, blur"
       ].join(", ");
 
-      return { prompt: positive, negative_prompt: negative };
+      return { prompt: pos, negative_prompt: neg };
     }
 
-    function makeImageUrl({ prompt, negative_prompt, width, height, seed, model }) {
-      const q = new URLSearchParams({
-        width: width,
-        height: height,
-        seed: seed,
-        model: model,
+    function buildUrl({ prompt, negative_prompt, width, height, seed, model }) {
+      const params = new URLSearchParams({
+        model,
+        width: String(width),
+        height: String(height),
+        seed: String(seed),
         enhance: 'true',
-        safe: 'true',
-        nologo: 'true'
+        nologo: 'true',
+        safe: 'true'
       });
-      if (negative_prompt) q.set('negative_prompt', negative_prompt);
+      if (negative_prompt) params.set('negative_prompt', negative_prompt);
+      if (els.apiKey.value.trim()) params.set('key', els.apiKey.value.trim());
 
-      const encPrompt = encodeURIComponent(prompt);
-      return `https://gen.pollinations.ai/image/${encPrompt}?${q}`;
+      return `https://gen.pollinations.ai/image/${encodeURIComponent(prompt)}?${params}`;
     }
 
-    async function loadImage(url, timeout = 90000) {
-      return new Promise((resolve, reject) => {
+    async function loadImg(url, timeout = 90000) {
+      return new Promise((ok, no) => {
         const img = new Image();
-        const timer = setTimeout(() => {
-          img.src = '';
-          reject(new Error('Image load timeout'));
-        }, timeout);
-
-        img.onload  = () => { clearTimeout(timer); resolve(); };
-        img.onerror = () => { clearTimeout(timer); reject(new Error('Image failed to load')); };
+        const t = setTimeout(() => { img.src = ''; no(new Error('Image timeout')); }, timeout);
+        img.onload = () => { clearTimeout(t); ok(); };
+        img.onerror = () => { clearTimeout(t); no(new Error('Image load error')); };
         img.src = url;
       });
     }
 
-    async function generateWithRetry(payloadBase, maxAttempts = 3) {
-      let lastError;
+    async function generate(payloadBase) {
+      const seed = Math.floor(Math.random() * 1e9);
+      const payload = { ...payloadBase, seed };
+      const url = buildUrl(payload);
 
-      for (let i = 0; i < maxAttempts; i++) {
-        const attempt = i + 1;
-        const seed = Math.floor(Math.random() * 1e9);
-        const payload = { ...payloadBase, seed };
+      setStatus(`Generating (${payload.model}, seed ${seed}) …`);
 
-        const model = payload.model;
-        setStatus(`Generating (${model}) — attempt ${attempt}/${maxAttempts}…`);
-
-        try {
-          if (attempt > 1) await sleep(4000 * (attempt - 1));
-          const url = makeImageUrl(payload);
-          await loadImage(url);
-          return { url, seed, model };
-        } catch (err) {
-          lastError = err;
-          console.warn(`Attempt ${attempt} failed:`, err.message);
-        }
-      }
-
-      throw lastError || new Error('All generation attempts failed');
+      await loadImg(url);
+      return { url, seed, model: payload.model };
     }
 
-    async function run({ newVariation = false } = {}) {
-      const file = els.photoInput.files?.[0];
-      if (!file) return alert('Please choose an image first.');
+    async function runTransform({ vary = false } = {}) {
+      const file = els.file.files?.[0];
+      if (!file) return alert('Select a statue image first.');
 
-      els.btn.disabled = els.retryBtn.disabled = true;
+      els.btn.disabled = els.retry.disabled = true;
       setStatus('Processing…');
-      els.resultArea.style.display = 'none';
-      els.outputImg.classList.add('loading-img');
+      els.result.style.display = 'none';
+      els.img.classList.add('loading');
+      els.img.src = '';
 
       try {
-        setStatus('Reading file…');
-        const dataUrl = await fileToDataUrl(file);
+        const b64 = await fileToB64(file);
 
-        let vision;
+        let vision = null;
         try {
-          setStatus('Analyzing statue with vision AI…');
-          vision = await describeImage(dataUrl);
-        } catch (e) {
-          console.warn('Vision failed:', e);
-          setStatus('Vision failed → using fallback prompt', true);
+          setStatus('Analyzing statue (vision)…');
+          vision = await visionDescribe(b64);
+        } catch {}
+        if (!vision) {
+          setStatus('Vision limited → using fallback prompt', true);
           vision = {};
         }
 
-        const { prompt, negative_prompt } = buildPrompt(vision, els.notes.value);
+        const { prompt, negative_prompt } = makePrompt(vision, els.notes.value);
 
         const [w, h] = els.size.value.split('x').map(Number);
         const model = els.model.value || 'flux';
 
-        const payloadBase = { prompt, negative_prompt, width: w||768, height: h||1344, model };
+        const base = { prompt, negative_prompt, width: w||768, height: h||1344, model };
 
-        if (!newVariation && lastPayload) {
-          payloadBase.seed = lastPayload.seed;
-        }
+        if (!vary && lastPayload?.seed) base.seed = lastPayload.seed;
 
-        lastPayload = payloadBase;
+        lastPayload = base;
 
-        const { url, seed, model: usedModel } = await generateWithRetry(payloadBase);
+        const { url, seed, model: used } = await generate(base);
 
-        els.outputImg.src = url;
-        els.outputImg.classList.remove('loading-img');
-        els.resultArea.style.display = 'block';
+        els.img.src = url;
+        els.img.classList.remove('loading');
+        els.result.style.display = 'block';
 
-        setStatus(`Done • Model: ${usedModel} • Seed: ${seed}`);
+        setStatus(`Success • ${used} • Seed: ${seed}`);
       } catch (err) {
         console.error(err);
-        setStatus(`Error: ${err.message.slice(0,120)}…`, true);
-        els.outputImg.classList.remove('loading-img');
+        setStatus(`Error: ${err.message.slice(0, 140)}…`, true);
+        els.img.classList.remove('loading');
       } finally {
-        els.btn.disabled = els.retryBtn.disabled = false;
+        els.btn.disabled = els.retry.disabled = false;
       }
     }
 
-    els.btn.addEventListener('click',      () => run({ newVariation: true }));
-    els.retryBtn.addEventListener('click', () => run({ newVariation: true }));
+    els.btn.addEventListener('click', () => runTransform({ vary: true }));
+    els.retry.addEventListener('click', () => runTransform({ vary: true }));
 
-    els.dlBtn.addEventListener('click', () => {
-      if (!els.outputImg.src) return;
+    els.dl.addEventListener('click', () => {
+      if (!els.img.src) return;
       const a = document.createElement('a');
-      a.href = els.outputImg.src;
-      a.download = `person-from-statue_${Date.now()}.jpg`;
+      a.href = els.img.src;
+      a.download = `statue-to-person_${Date.now()}.jpg`;
       a.click();
     });
 
-    // Optional: auto-run when image selected (uncomment if desired)
-    // els.photoInput.addEventListener('change', () => run({ newVariation: true }));
+    // Optional: auto start on file select
+    // els.file.addEventListener('change', () => runTransform({ vary: true }));
   </script>
 </body>
 </html>
